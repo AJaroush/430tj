@@ -3,9 +3,22 @@ from .models import Video
 from .forms import VideoForm
 
 def video_list(request):
-    videos = Video.objects.all().order_by('movie_title')
-    return render(request, 'movies/video_list.html', {'videos': videos})
+    pending_migrations = False
+    videos = []
+    try:
+        qs = Video.objects.all()
+        # Touch the queryset to force an early DB check without rendering
+        _ = qs[:1].exists()
+        videos = qs
+    except (OperationalError, ProgrammingError):
+        # DB/table not ready yet – show an info message instead of crashing
+        pending_migrations = True
 
+    return render(
+        request,
+        'movies/video_list.html',
+        {'videos': videos, 'pending_migrations': pending_migrations}
+    )
 def video_detail(request, pk):
     video = get_object_or_404(Video, pk=pk)
     return render(request, 'movies/video_detail.html', {'video': video})
