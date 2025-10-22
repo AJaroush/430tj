@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container">
+  <h1>{{ form.instance.pk|yesno:"Edit Video,Add Video" }}</h1>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-fields">
+      {{ form.as_p }}
+    </div>
+    <button class="btn" type="submit">💾 Save</button>
+    <a class="btn danger" href="{% url 'video_list' %}">Cancel</a>
+  </form>
+</div>
+
+<style>
+  .form-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    margin: 2rem auto;
+    box-shadow: 0px 6px 15px rgba(0,0,0,0.1);
+  }
+  .form-container h1 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #0b5ed7;
+  }
+  .form-fields p {
+    margin-bottom: 1rem;
+  }
+  .form-fields label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  .form-fields input, .form-fields select {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.95rem;
+  }
+  .form-fields input:focus, .form-fields select:focus {
+    outline: none;
+    border-color: #0b5ed7;
+    box-shadow: 0 0 4px rgba(11, 94, 215, 0.3);
+  }
+  form button, form a.btn {
+    margin-top: 1rem;
+  }
+</style>
+{% endblock %}

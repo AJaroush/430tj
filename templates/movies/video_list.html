@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Videos</h1>
+<table>
+  <tr>
+    <th>Title</th><th>Year</th><th>Genre</th><th>Director</th>
+    <th>Actor 1</th><th>Actor 2</th><th>Actions</th>
+  </tr>
+  {% for video in videos %}
+  <tr>
+    <td><a href="{% url 'video_detail' video.pk %}">{{ video.movie_title }}</a></td>
+    <td>{{ video.release_year }}</td>
+    <td>{{ video.movie_genre }}</td>
+    <td>{{ video.director_name }}</td>
+    <td>{{ video.actor1_name }}</td>
+    <td>{{ video.actor2_name }}</td>
+    <td>
+      <a href="{% url 'video_update' video.pk %}">Edit</a> |
+      <a href="{% url 'video_delete' video.pk %}">Delete</a>
+    </td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="7">No videos yet. <a href="{% url 'video_create' %}">Add one</a>.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

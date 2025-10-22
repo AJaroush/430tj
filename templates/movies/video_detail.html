@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ video.movie_title }} ({{ video.release_year }})</h1>
+<p><strong>Movie ID:</strong> {{ video.movie_id }}</p>
+<p><strong>Genre:</strong> {{ video.movie_genre }}</p>
+<p><strong>Director:</strong> {{ video.director_name }}</p>
+<p><strong>Actor 1:</strong> {{ video.actor1_name }}</p>
+<p><strong>Actor 2:</strong> {{ video.actor2_name|default:"—" }}</p>
+<p>
+  <a class="btn" href="{% url 'video_update' video.pk %}">Edit</a>
+  <a class="btn danger" href="{% url 'video_delete' video.pk %}">Delete</a>
+</p>
+{% endblock %}
