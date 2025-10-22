@@ -1,55 +1,98 @@
 {% extends "base.html" %}
+
 {% block content %}
   <h1>Videos</h1>
 
-  {% if pending_migrations %}
-    <div style="padding:12px; background:#fff8e1; border:1px solid #ffe082; border-radius:6px; margin-bottom:12px;">
-      Database is not initialized yet. The server will apply migrations automatically.
-      Refresh this page after the deployment finishes.
-    </div>
-  {% else %}
-    <p style="margin: 0.5rem 0 1rem;">
-      <a href="{% url 'video_create' %}">+ Add a new video</a>
-    </p>
+  <p style="margin: 0.5rem 0 1rem;">
+    <a class="btn" href="{% url 'video_create' %}">+ Add Video</a>
+  </p>
 
-    <table style="width:100%; border-collapse: collapse;">
-      <thead>
-        <tr>
-          <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Title</th>
-          <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Year</th>
-          <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Genre</th>
-          <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Director</th>
-          <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actor 1</th>
-          <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actor 2</th>
-          <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actions</th>
+  <style>
+    .tbl { width:100%; border-collapse:collapse; }
+    .tbl th, .tbl td { text-align:left; padding:8px; border-bottom:1px solid #eee; }
+    .muted { color:#888; }
+    .placeholder { opacity: .8; }
+    .badge { display:inline-block; padding:2px 6px; border-radius:4px; background:#eee; font-size:12px; }
+  </style>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Year</th>
+        <th>Genre</th>
+        <th>Director</th>
+        <th>Actor 1</th>
+        <th>Actor 2</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      {# ---- PLACEHOLDERS when DB isn't ready ---- #}
+      {% if pending_migrations %}
+        <tr class="placeholder">
+          <td>Sample Movie A</td>
+          <td>1999</td>
+          <td>Sci-Fi</td>
+          <td>John Doe</td>
+          <td>Actor Alpha</td>
+          <td>Actor Beta</td>
+          <td><span class="muted">Edit</span> | <span class="muted">Delete</span></td>
         </tr>
-      </thead>
-      <tbody>
-        {% if videos %}
-          {% for video in videos %}
-            <tr>
-              <td style="border-bottom:1px solid #f0f0f0; padding:8px;">
-                <a href="{% url 'video_detail' video.pk %}">{{ video.movie_title|default:"—" }}</a>
-              </td>
-              <td style="border-bottom:1px solid #f0f0f0; padding:8px;">{{ video.release_year|default:"—" }}</td>
-              <td style="border-bottom:1px solid #f0f0f0; padding:8px;">{{ video.movie_genre|default:"—" }}</td>
-              <td style="border-bottom:1px solid #f0f0f0; padding:8px;">{{ video.director_name|default:"—" }}</td>
-              <td style="border-bottom:1px solid #f0f0f0; padding:8px;">{{ video.actor1_name|default:"—" }}</td>
-              <td style="border-bottom:1px solid #f0f0f0; padding:8px;">{{ video.actor2_name|default:"—" }}</td>
-              <td style="border-bottom:1px solid #f0f0f0; padding:8px;">
-                <a href="{% url 'video_update' video.pk %}">Edit</a> |
-                <a href="{% url 'video_delete' video.pk %}">Delete</a>
-              </td>
-            </tr>
-          {% endfor %}
-        {% else %}
+        <tr class="placeholder">
+          <td>Sample Movie B</td>
+          <td>2008</td>
+          <td>Drama</td>
+          <td>Jane Smith</td>
+          <td>Actor Gamma</td>
+          <td>Actor Delta</td>
+          <td><span class="muted">Edit</span> | <span class="muted">Delete</span></td>
+        </tr>
+        <tr class="placeholder">
+          <td>Sample Movie C</td>
+          <td>2014</td>
+          <td>Action</td>
+          <td>Chris Lee</td>
+          <td>Actor Epsilon</td>
+          <td>Actor Zeta</td>
+          <td><span class="muted">Edit</span> | <span class="muted">Delete</span></td>
+        </tr>
+        <tr>
+          <td colspan="7" class="muted">
+            <span class="badge">Placeholder data</span>
+            Real entries will appear automatically once the database initializes.
+          </td>
+        </tr>
+
+      {# ---- REAL DATA when DB is ready ---- #}
+      {% elif videos %}
+        {% for video in videos %}
           <tr>
-            <td colspan="7" style="padding:12px; text-align:center; color:#666;">
-              No videos yet. <a href="{% url 'video_create' %}">Add one</a>.
+            <td>
+              <a href="{% url 'video_detail' video.pk %}">{{ video.movie_title|default:"—" }}</a>
+            </td>
+            <td>{{ video.release_year|default:"—" }}</td>
+            <td>{{ video.movie_genre|default:"—" }}</td>
+            <td>{{ video.director_name|default:"—" }}</td>
+            <td>{{ video.actor1_name|default:"—" }}</td>
+            <td>{{ video.actor2_name|default:"—" }}</td>
+            <td>
+              <a href="{% url 'video_update' video.pk %}">Edit</a> |
+              <a href="{% url 'video_delete' video.pk %}">Delete</a>
             </td>
           </tr>
-        {% endif %}
-      </tbody>
-    </table>
-  {% endif %}
+        {% endfor %}
+
+      {# ---- EMPTY STATE if DB ready but no rows ---- #}
+      {% else %}
+        <tr>
+          <td colspan="7" class="muted">
+            No videos yet. <a href="{% url 'video_create' %}">Add one</a>.
+          </td>
+        </tr>
+      {% endif %}
+
+    </tbody>
+  </table>
 {% endblock %}
