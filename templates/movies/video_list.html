@@ -11,8 +11,7 @@
     .tbl { width:100%; border-collapse:collapse; }
     .tbl th, .tbl td { text-align:left; padding:8px; border-bottom:1px solid #eee; }
     .muted { color:#888; }
-    .placeholder { opacity: .8; }
-    .badge { display:inline-block; padding:2px 6px; border-radius:4px; background:#eee; font-size:12px; }
+    .placeholder { opacity:.85; }
   </style>
 
   <table class="tbl">
@@ -29,49 +28,11 @@
     </thead>
     <tbody>
 
-      {# ---- PLACEHOLDERS when DB isn't ready ---- #}
-      {% if pending_migrations %}
-        <tr class="placeholder">
-          <td>Sample Movie A</td>
-          <td>1999</td>
-          <td>Sci-Fi</td>
-          <td>John Doe</td>
-          <td>Actor Alpha</td>
-          <td>Actor Beta</td>
-          <td><span class="muted">Edit</span> | <span class="muted">Delete</span></td>
-        </tr>
-        <tr class="placeholder">
-          <td>Sample Movie B</td>
-          <td>2008</td>
-          <td>Drama</td>
-          <td>Jane Smith</td>
-          <td>Actor Gamma</td>
-          <td>Actor Delta</td>
-          <td><span class="muted">Edit</span> | <span class="muted">Delete</span></td>
-        </tr>
-        <tr class="placeholder">
-          <td>Sample Movie C</td>
-          <td>2014</td>
-          <td>Action</td>
-          <td>Chris Lee</td>
-          <td>Actor Epsilon</td>
-          <td>Actor Zeta</td>
-          <td><span class="muted">Edit</span> | <span class="muted">Delete</span></td>
-        </tr>
-        <tr>
-          <td colspan="7" class="muted">
-            <span class="badge">Placeholder data</span>
-            Real entries will appear automatically once the database initializes.
-          </td>
-        </tr>
-
-      {# ---- REAL DATA when DB is ready ---- #}
-      {% elif videos %}
+      {# show real data only when ready #}
+      {% if not pending_migrations %}
         {% for video in videos %}
           <tr>
-            <td>
-              <a href="{% url 'video_detail' video.pk %}">{{ video.movie_title|default:"—" }}</a>
-            </td>
+            <td><a href="{% url 'video_detail' video.pk %}">{{ video.movie_title|default:"—" }}</a></td>
             <td>{{ video.release_year|default:"—" }}</td>
             <td>{{ video.movie_genre|default:"—" }}</td>
             <td>{{ video.director_name|default:"—" }}</td>
@@ -82,14 +43,21 @@
               <a href="{% url 'video_delete' video.pk %}">Delete</a>
             </td>
           </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7" class="muted">No videos yet. <a href="{% url 'video_create' %}">Add one</a>.</td>
+          </tr>
         {% endfor %}
-
-      {# ---- EMPTY STATE if DB ready but no rows ---- #}
       {% else %}
-        <tr>
-          <td colspan="7" class="muted">
-            No videos yet. <a href="{% url 'video_create' %}">Add one</a>.
-          </td>
+        {# single placeholder row #}
+        <tr class="placeholder">
+          <td>Sample Movie</td>
+          <td>2012</td>
+          <td>Action</td>
+          <td>Alex Director</td>
+          <td>Jamie Star</td>
+          <td>Casey Co-Star</td>
+          <td><span class="muted">Edit</span> | <span class="muted">Delete</span></td>
         </tr>
       {% endif %}
 
