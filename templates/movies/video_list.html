@@ -1,2 +1,48 @@
+{% extends "base.html" %}
 
+{% block content %}
+  <h1>Videos</h1>
 
+  <p style="margin: 0.5rem 0 1rem;">
+    <a href="{% url 'video_create' %}">+ Add a new video</a>
+  </p>
+
+  <table style="width:100%; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Title</th>
+        <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Year</th>
+        <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Genre</th>
+        <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Director</th>
+        <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actor 1</th>
+        <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actor 2</th>
+        <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for video in videos %}
+        <tr>
+          <td style="border-bottom:1px solid #f0f0f0; padding:8px;">
+            <a href="{% url 'video_detail' video.pk %}">{{ video.movie_title|default:"—" }}</a>
+          </td>
+          <td style="border-bottom:1px solid #f0f0f0; padding:8px;">{{ video.release_year|default:"—" }}</td>
+          <td style="border-bottom:1px solid #f0f0f0; padding:8px;">{{ video.movie_genre|default:"—" }}</td>
+          <td style="border-bottom:1px solid #f0f0f0; padding:8px;">{{ video.director_name|default:"—" }}</td>
+          <td style="border-bottom:1px solid #f0f0f0; padding:8px;">{{ video.actor1_name|default:"—" }}</td>
+          <td style="border-bottom:1px solid #f0f0f0; padding:8px;">{{ video.actor2_name|default:"—" }}</td>
+          <td style="border-bottom:1px solid #f0f0f0; padding:8px;">
+            <a href="{% url 'video_update' video.pk %}">Edit</a>
+            |
+            <a href="{% url 'video_delete' video.pk %}">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="7" style="padding:12px; text-align:center; color:#666;">
+            No videos yet. <a href="{% url 'video_create' %}">Add one</a>.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
