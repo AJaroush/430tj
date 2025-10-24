@@ -1,66 +1,47 @@
-{% extends "base.html" %}
-
-{% block content %}
-  <h1>my Movies</h1>
-
-  <p style="margin: 0.5rem 0 1rem;">
-    <a class="btn" href="{% url 'video_create' %}">+ Add Video</a>
-  </p>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Movies</title>
   <style>
-    .tbl { width:100%; border-collapse:collapse; }
-    .tbl th, .tbl td { text-align:left; padding:8px; border-bottom:1px solid #eee; }
-    .muted { color:#888; }
-    .placeholder { opacity:.85; }
+    body { font-family: system-ui, Arial, sans-serif; margin: 20px; }
+    .tbl { width: 100%; border-collapse: collapse; }
+    .tbl th, .tbl td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    .btn { display: inline-block; padding: 6px 10px; border: 1px solid #999; text-decoration: none; }
   </style>
+</head>
+<body>
+  <h1>My Movies</h1>
+
+  <!-- optional: this is a dumb link, change it later; it won't break anything -->
+  <p><a class="btn" href="/videos/new/">+ Add Video</a></p>
 
   <table class="tbl">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Year</th>
-        <th>Genre</th>
-        <th>Director</th>
-        <th>Actor 1</th>
-        <th>Actor 2</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
+    <tr>
+      <th>Title</th>
+      <th>Year</th>
+      <th>Genre</th>
+      <th>Actions</th>
+    </tr>
 
-      {# show real data only when ready #}
-      {% if not pending_migrations %}
-        {% for video in videos %}
-          <tr>
-            <td><a href="{% url 'video_detail' video.pk %}">{{ video.movie_title|default:"—" }}</a></td>
-            <td>{{ video.release_year|default:"—" }}</td>
-            <td>{{ video.movie_genre|default:"—" }}</td>
-            <td>{{ video.director_name|default:"—" }}</td>
-            <td>{{ video.actor1_name|default:"—" }}</td>
-            <td>{{ video.actor2_name|default:"—" }}</td>
-            <td>
-              <a href="{% url 'video_update' video.pk %}">Edit</a> |
-              <a href="{% url 'video_delete' video.pk %}">Delete</a>
-            </td>
-          </tr>
-        {% empty %}
-          <tr>
-            <td colspan="7" class="muted">No videos yet. <a href="{% url 'video_create' %}">Add one</a>.</td>
-          </tr>
-        {% endfor %}
-      {% else %}
-        {# single placeholder row #}
-        <tr class="placeholder">
-          <td>Sample Movie</td>
-          <td>2012</td>
-          <td>Action</td>
-          <td>Alex Director</td>
-          <td>Jamie Star</td>
-          <td>Casey Co-Star</td>
-          <td><span class="muted">Edit</span> | <span class="muted">Delete</span></td>
+    {% if videos %}
+      {% for v in videos %}
+        <tr>
+          <td>{{ v.movie_title }}</td>
+          <td>{{ v.release_year }}</td>
+          <td>{{ v.get_movie_genre_display }}</td>
+          <td>—</td>
         </tr>
-      {% endif %}
-
-    </tbody>
+      {% endfor %}
+    {% else %}
+      <!-- Single placeholder row so the site renders even with no data -->
+      <tr>
+        <td>Example Movie</td>
+        <td>2024</td>
+        <td>Action</td>
+        <td>—</td>
+      </tr>
+    {% endif %}
   </table>
-{% endblock %}
+</body>
+</html>
